@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --secondary-color: 86, 89, 91;
+  --primary-color: 255, 255, 255;
+  --light-blue: 243, 246, 255;
+  --primary-blue: 99, 102, 241;
+  --logo-gradient: linear-gradient(90deg, rgba(99,102,242,0) 18%, rgba(209,46,252,1) 98%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+html{
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+}
+
+.card-section{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(17em, 100%), 1fr));
+  row-gap: 4.5em;
+  column-gap: 1em;
+}
+
+.flex-between{
+  @apply flex justify-between items-center
+}
+
+.flex-center{
+  @apply flex justify-center items-center
+}
+
+.flex-column-center{
+  @apply flex flex-col justify-center items-center
+}
+
+.max-screen{
+  max-width: 855px;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

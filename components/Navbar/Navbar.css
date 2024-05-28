@@ -1,0 +1,53 @@
+.navigation{
+    background-color: rgb(var(--light-blue));
+}
+
+.log-btn{
+    background-color: rgb(var(--primary-blue));
+    color: rgb(var(--primary-color));
+}
+
+.log-btn:hover{
+    background: rgb(85, 88, 245);
+}
+
+.bars{
+    width: 1.8rem;
+    height: 1.6rem;
+}
+
+.logo{
+    background: linear-gradient(to right, rgb(var(--primary-blue)) 18%, rgb(209,46,252) 98%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.bar{
+    position: relative;
+}
+
+.bar, .bar::before, .bar::after{
+    width: 100%;
+    height: 0.2rem;
+    background-color: rgb(var(--primary-color));
+}
+
+.bar::before{
+    content: '';
+    position: absolute;
+    top: -300%;
+}
+
+.bar::after{
+    content: '';
+    position: absolute;
+    top: 300%;
+}
+
+.nav-btn>svg.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.mui-i4bv87-MuiSvgIcon-root{
+    font-size: 1.6em;
+}
+
+.mui-1t1j96h-MuiPaper-root-MuiDialog-paper{
+    width: min(40em, 100%) !important;
+}

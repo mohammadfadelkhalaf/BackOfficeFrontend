@@ -1,0 +1,9 @@
+.add-course-btn > button{
+    border-color: rgb(var(--primary-blue));
+    color: rgb(var(--primary-blue));
+}
+
+.add-course-btn > button:hover{
+    background-color: rgb(var(--primary-blue));
+    color: white;
+}

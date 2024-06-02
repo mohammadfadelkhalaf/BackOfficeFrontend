@@ -1,12 +1,18 @@
-const deleteCourse = async (courseId: number) => {
+export interface IUpdatableNewsletter {}
+
+const updateNewsletter = async (
+  subscriberEmail: string,
+  updatedFields: IUpdatableNewsletter
+): Promise<void> => {
   try {
     const response = await fetch(
-      `https://localhost:7098/api/Courses/${courseId}`,
+      `https://localhost:7098/api/Subscribers/${subscriberEmail}`,
       {
-        method: "DELETE",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(updatedFields),
       }
     );
 
@@ -21,16 +27,12 @@ const deleteCourse = async (courseId: number) => {
       }
 
       throw new Error(
-        `Failed to delete course: ${response.status} ${response.statusText} - ${errorData}`
+        `Failed to update order: ${response.status} ${response.statusText} - ${errorData}`
       );
     }
-
-    // If the response is plain text
-    return await response.text();
   } catch (error) {
-    console.error("Error deleting course:", error);
-    throw new Error(`Failed to delete course: ${error.message}`);
+    throw new Error("Failed to update order");
   }
 };
 
-export default deleteCourse;
+export default updateNewsletter;

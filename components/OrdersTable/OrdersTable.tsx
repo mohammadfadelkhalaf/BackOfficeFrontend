@@ -5,32 +5,33 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import getCourses, { ICourseFromDB } from "@/utils/getCourses";
-import { useEffect, useState } from "react";
-// import { useCourses } from "@/app/Providers/CourseProvider";
-import CourseTableRow from "../CoursesTable/CourseTableRow";
+import TablePagination from "@mui/material/TablePagination";
+import { useState } from "react";
 import { useOrders } from "@/ApiProviders/OrdersProvider";
-import getOrders from "@/utils/getOrders";
 import OrdersTableRow from "./OrdersTableRow";
-const OrdersTable = () => {
-  const { orders, error, loading, setOrders } = useOrders();
-  // const { courses, error, loading, setCourses } = useCourses();
-  // const {
-  //   orders,
-  //   loading: ordersLoading,
-  //   error: ordersLoadingError,
-  //   setOrders,
-  // } = useOrders();
-  // console.log(orders);
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
 
-  // if (error) {
-  //   return <div>{error}</div>;
-  // }
-  // const orders = await getOrders();
-  // console.log(orders);
+const OrdersTable = () => {
+  const { orders, error, loading } = useOrders();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <div className="max-w-screen-lg mx-auto">
       <div className="w-full text-center my-20">
@@ -41,20 +42,20 @@ const OrdersTable = () => {
         <Table aria-label="simple table">
           <TableHead sx={{ bgcolor: "#eef1f8" }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.6rem" }}>
                 User Name
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.6rem" }}>
                 User email
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.6rem" }}>
                 Batch Name
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.6rem" }}>
                 Paid Amount
               </TableCell>
               <TableCell
-                sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
+                sx={{ fontWeight: "bold", fontSize: "1.6rem" }}
                 align="right"
               >
                 Action
@@ -62,11 +63,36 @@ const OrdersTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders?.map((order) => (
-              <OrdersTableRow key={order.id} order={order} />
-            ))}
+            {orders
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((order) => (
+                <OrdersTableRow key={order.id} order={order} />
+              ))}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={orders.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{
+            "& .MuiTablePagination-toolbar": {
+              fontSize: "1.2rem",
+            },
+            "& .MuiTablePagination-selectLabel": {
+              fontSize: "1.2rem",
+            },
+            "& .MuiTablePagination-input": {
+              fontSize: "1.2rem",
+            },
+            "& .MuiTablePagination-displayedRows": {
+              fontSize: "1.2rem",
+            },
+          }}
+        />
       </TableContainer>
     </div>
   );

@@ -21,7 +21,6 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchOrders = async () => {
       try {

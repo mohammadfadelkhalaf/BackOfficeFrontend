@@ -1,6 +1,5 @@
 import getCourses, { ICourseFromDB } from "@/utils/getCourses";
 import React, { createContext, useContext, useEffect, useState } from "react";
-// import { getCourses, ICourseFromDB } from '@/utils/getCourses';
 
 interface CoursesContextType {
   courses: ICourseFromDB[];
@@ -22,7 +21,6 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({
   const [courses, setCourses] = useState<ICourseFromDB[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchCourses = async () => {
       try {

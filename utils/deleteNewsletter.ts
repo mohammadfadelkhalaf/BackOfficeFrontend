@@ -1,7 +1,7 @@
-const deleteCourse = async (courseId: number) => {
+const deleteNewsletter = async (subscriberEmail: string) => {
   try {
     const response = await fetch(
-      `https://localhost:7098/api/Courses/${courseId}`,
+      `https://localhost:7098/api/Subscribers/${subscriberEmail}`,
       {
         method: "DELETE",
         headers: {
@@ -33,4 +33,4 @@ const deleteCourse = async (courseId: number) => {
   }
 };
 
-export default deleteCourse;
+export default deleteNewsletter;

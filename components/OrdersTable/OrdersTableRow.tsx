@@ -66,13 +66,13 @@ const OrdersTableRow = ({ order }: { order: IOrder }) => {
   };
   return (
     <TableRow>
-      <TableCell sx={{ fontSize: "1.2rem" }}>{userName}</TableCell>
-      <TableCell sx={{ fontSize: "1.2rem" }}>{email}</TableCell>
-      <TableCell sx={{ fontSize: "1.2rem" }}>$ {batch?.batchName}</TableCell>
-      <TableCell sx={{ fontSize: "1.2rem" }}>{paidAmount}</TableCell>
-      <TableCell sx={{ fontSize: "1.2rem" }}>
+      <TableCell sx={{ fontSize: "1.6rem" }}>{userName}</TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>{email}</TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>$ {batch?.batchName}</TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>{paidAmount}</TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>
         <div className="flex justify-end gap-2">
-          <Link href={`/orders/${id}`}>
+          <Link href={`/orders/${id}`} style={{fontSize: "1.6rem"}}>
             <Button variant="text" color="primary">
               <DirectionsIcon />
             </Button>

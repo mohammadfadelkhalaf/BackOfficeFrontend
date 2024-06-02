@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,214 +15,133 @@ import IconButton from "@mui/material/IconButton";
 import { useCourses } from "@/ApiProviders/CourseProvider";
 import getCourses from "@/utils/getCourses";
 import { uploadSingleFile } from "@/utils/uploadSingleFile";
-// import CoursesTable from "@/components/CoursesTable/CoursesTable";
+import "./AddCourseForm.css";
+
+const initialState = {
+  title: "",
+  price: "",
+  imageFile: null,
+  previewUrl: null,
+  disCountPrice: "",
+  hours: "",
+  likesInNumbers: "",
+  likesInProcent: "",
+  author: "",
+  isBestSeller: true,
+  isFeatured: false,
+  isActive: false,
+};
 
 const AddCourseForm = () => {
-  const [title, setTitle] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
-  const [imageName, setImageName] = useState<string>("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [disCountPrice, setDiscountPrice] = useState<string>("");
-  const [hours, setHours] = useState<string>("");
-  const [likesInNumbers, setLikesInNumbers] = useState<string>("");
-  const [likesInProcent, setLikesInProcent] = useState<string>("");
-  const [author, setAuthor] = useState<string>("");
-  const [isBestSeller, setisBestSeller] = useState<boolean>(true);
-  const [isFeatured, setIsFeatured] = useState<boolean>(false);
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const [isDelete, setIsDelete] = useState<boolean>(false);
-  const { courses, error, loading, setCourses } = useCourses();
+  const [formState, setFormState] = useState(initialState);
+  const [resetKey, setResetKey] = useState(0);
+  const { setCourses } = useCourses();
 
-  // function to handle file change
+  const handleChange = (field: string, value: any) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const file = files[0];
-      setImageFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+      handleChange("imageFile", file);
+      handleChange("previewUrl", URL.createObjectURL(file));
     }
   };
 
-  // function to remove the image
   const handleRemoveImage = () => {
-    setImageName("");
-    setImageFile(null);
-    setPreviewUrl(null);
+    handleChange("imageFile", null);
+    handleChange("previewUrl", null);
+  };
+
+  const validateFields = () => {
+    const requiredFields = [
+      "title",
+      "price",
+      "disCountPrice",
+      "hours",
+      "likesInNumbers",
+      "likesInProcent",
+      "author",
+      "imageFile",
+    ];
+
+    const fieldNames = {
+      title: "Title",
+      price: "Price",
+      disCountPrice: "Discount Price",
+      hours: "Total Hours",
+      likesInNumbers: "Likes in Numbers",
+      likesInProcent: "Likes in Percentage",
+      author: "Author",
+      imageFile: "Image",
+    };
+
+    for (let field of requiredFields) {
+      if (!formState[field as keyof typeof formState]) {
+        toast.error(
+          `${fieldNames[field as keyof typeof fieldNames]} is required`,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
+        return false;
+      }
+    }
+    return true;
   };
 
   const onSubmit = async () => {
+    if (!validateFields()) return;
+
     try {
-      let isValid = true;
+      const uploadedImageName = await uploadSingleFile(formState.imageFile);
       const addedCourse: ICourse = {
-        title,
-        price: parseFloat(price),
-        imageName,
-        disCountPrice: parseFloat(disCountPrice),
-        hours: parseFloat(hours),
-        likesInProcent: parseFloat(likesInProcent),
-        likesInNumbers: parseInt(likesInNumbers, 10),
-        author,
-        isBestSeller,
+        title: formState.title,
+        price: parseFloat(formState.price),
+        imageName: uploadedImageName,
+        disCountPrice: parseFloat(formState.disCountPrice),
+        hours: parseFloat(formState.hours),
+        likesInProcent: parseFloat(formState.likesInProcent),
+        likesInNumbers: parseInt(formState.likesInNumbers, 10),
+        author: formState.author,
+        isBestSeller: formState.isBestSeller,
         creatorId: "1",
         modifierId: "1",
-        // isFeatured,
-        // isActive,
-        // isDelete,
       };
 
-      // Validations
-      if (!title) {
-        toast.error("Title is required", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        isValid = false;
-      }
-      if (!price) {
-        toast.error("Price is required", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        isValid = false;
-      }
-      if (!imageFile) {
-        // todo
-        toast.error("Image is required", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        isValid = false;
-      }
-      if (!disCountPrice) {
-        toast.error("Discount Price is required", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        isValid = false;
-      }
-      if (!hours) {
-        toast.error("Total Hours is required", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        isValid = false;
-      }
-      if (!likesInProcent) {
-        toast.error("Likes In Percentage is required", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        isValid = false;
-      }
-      if (!likesInNumbers) {
-        toast.error("Likes In Numbers is required", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        isValid = false;
-      }
-      if (!author) {
-        toast.error("Author is required", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        isValid = false;
-      }
+      await addCourse(addedCourse);
+      toast.success("Course added successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
 
-      if (isValid && imageFile) {
-        const uploadedImageName = await uploadSingleFile(imageFile);
-        console.log(uploadedImageName);
-        addedCourse.imageName = uploadedImageName;
-
-        //  console.log("added course", addedCourse);
-        const res = await addCourse(addedCourse);
-        //  console.log(res);
-
-        toast.success("Course added successfully", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-
-        // Get all courses again
-        const coursesData = await getCourses();
-        setCourses(coursesData);
-
-        // Reset form fields
-
-        // TODO Uncomment Later
-        // setTitle("");
-        // setPrice("");
-        // setDiscountPrice("");
-        // setHours("");
-        // setLikesInProcent("");
-        // setLikesInNumbers("");
-        // setAuthor("");
-        // setImageName("");
-        // setImageFile(null);
-        // setPreviewUrl(null);
-        // setisBestSeller(true);
-        // setIsFeatured(false);
-        // setIsActive(false);
-        // setIsDelete(false);
-      }
+      // set Real time course global state.
+      const coursesData = await getCourses();
+      setCourses(coursesData);
+      // Reset form state after successful submission
+      setFormState(initialState);
+      // Increment resetKey to force re-render of TextAreaComponents
+      setResetKey((prevKey) => prevKey + 1);
     } catch (error) {
       console.error("Error adding course:", error);
-
       toast.error("Failed to add course", {
         position: "top-right",
         autoClose: 5000,
@@ -238,90 +158,85 @@ const AddCourseForm = () => {
   return (
     <>
       <ToastContainer />
-      <div className=" flex justify-center items-center">
-        <div className="w-full mx-auto lg:w-[900px] shadow-lg bg-white grid rounded-lg border p-8 ">
+      <div className="flex justify-center items-center">
+        <div className="w-full mx-auto lg:w-[900px] shadow-lg bg-white grid rounded-lg border p-8">
           <div className="w-full text-center">
             <h1 className="text-3xl pb-4">Add Course</h1>
-            <hr className=" h-1 w-4/5 mx-auto rounded-xl " />
+            <hr className="h-1 w-4/5 mx-auto rounded-xl" />
           </div>
-          <div className="p-8  gap-4 justify-center items-center grid grid-cols-1 md:grid-cols-2 ">
+          <div className="p-8 gap-4 justify-center items-center grid grid-cols-1 md:grid-cols-2">
             <div className="w-full mt-4">
               <TextAreaComponents
+                key={`title-${resetKey}`}
                 id={6}
                 label={"Course Title"}
                 placeholder={"Course Title"}
-                value={(props) => {
-                  setTitle(props);
-                }}
+                sx={{ fontSize: "1.6rem !important" }}
+                value={(props) => handleChange("title", props)}
               />
             </div>
             <div className="w-full mt-4">
               <TextAreaComponents
+                key={`price-${resetKey}`}
                 id={2}
                 label={"Course Price"}
                 placeholder={"Course Price"}
-                value={(props) => {
-                  setPrice(props);
-                }}
+                value={(props) => handleChange("price", props)}
               />
             </div>
             <div className="w-full mt-4">
               <TextAreaComponents
+                key={`disCountPrice-${resetKey}`}
                 id={2}
                 label={"Discount Price"}
                 placeholder={"Discount Price"}
-                value={(props) => {
-                  setDiscountPrice(props);
-                }}
+                value={(props) => handleChange("disCountPrice", props)}
               />
             </div>
-
-            <div className="w-full mt-4 ">
+            <div className="w-full mt-4">
               <TextAreaComponents
+                key={`hours-${resetKey}`}
                 id={2}
                 label={"Total Hours"}
                 placeholder={"Total Hours"}
-                value={(props) => {
-                  setHours(props);
-                }}
+                value={(props) => handleChange("hours", props)}
               />
             </div>
             <div className="w-full mt-4">
               <TextAreaComponents
+                key={`likesInProcent-${resetKey}`}
                 id={2}
                 label={"Likes Percentage"}
                 placeholder={"Likes Percentage"}
-                value={(props) => {
-                  setLikesInProcent(props);
-                }}
+                value={(props) => handleChange("likesInProcent", props)}
               />
             </div>
             <div className="w-full mt-4">
               <TextAreaComponents
+                key={`likesInNumbers-${resetKey}`}
                 id={2}
                 label={"Likes Numbers"}
                 placeholder={"Likes Numbers"}
-                value={(props) => {
-                  setLikesInNumbers(props);
-                }}
+                value={(props) => handleChange("likesInNumbers", props)}
               />
             </div>
             <div className="w-full mt-4">
               <TextAreaComponents
+                key={`author-${resetKey}`}
                 id={6}
                 label={"Author"}
                 placeholder={"Author"}
-                value={(props) => {
-                  setAuthor(props);
-                }}
+                value={(props) => handleChange("author", props)}
               />
             </div>
-            <div className="w-full mt-4 flex   gap-2 md:gap-4 justify-center md:justify-start pl-6">
+            <div className="w-full mt-4 flex gap-2 md:gap-4 justify-center md:justify-start pl-6">
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={isBestSeller}
-                    onChange={(event) => setisBestSeller(event.target.checked)}
+                    checked={formState.isBestSeller}
+                    onChange={(event) =>
+                      handleChange("isBestSeller", event.target.checked)
+                    }
                   />
                 }
                 label="Best Seller"
@@ -334,8 +249,10 @@ const AddCourseForm = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={isFeatured}
-                    onChange={(event) => setIsFeatured(event.target.checked)}
+                    checked={formState.isFeatured}
+                    onChange={(event) =>
+                      handleChange("isFeatured", event.target.checked)
+                    }
                   />
                 }
                 label="Featured"
@@ -348,8 +265,10 @@ const AddCourseForm = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={isActive}
-                    onChange={(event) => setIsActive(event.target.checked)}
+                    checked={formState.isActive}
+                    onChange={(event) =>
+                      handleChange("isActive", event.target.checked)
+                    }
                   />
                 }
                 label="Active"
@@ -360,7 +279,7 @@ const AddCourseForm = () => {
                 }}
               />
             </div>
-            {previewUrl && (
+            {formState.previewUrl && (
               <div className="relative w-full mt-4 pl-6 col-span-2">
                 <div className="relative inline-block">
                   <IconButton
@@ -379,7 +298,7 @@ const AddCourseForm = () => {
                     <CloseIcon style={{ fontSize: "24px" }} />
                   </IconButton>
                   <Image
-                    src={previewUrl}
+                    src={formState.previewUrl}
                     alt="Course Preview"
                     className="rounded-lg shadow-md"
                     style={{ maxHeight: "600px", maxWidth: "100%" }}
@@ -390,46 +309,45 @@ const AddCourseForm = () => {
                 </div>
               </div>
             )}
-
-            <div className="w-full mt-4 pl-6">
-              <FormControlLabel
-                control={
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    startIcon={<AddPhotoAlternateIcon />}
-                    sx={{ marginRight: "8px" }}
-                  >
-                    <span style={{ fontSize: "1.25rem" }}>
-                      Upload Course Image
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      style={{ display: "none" }}
-                    />
-                  </Button>
-                }
-                label={imageName || "No file chosen"}
+            <div className="w-full mt-4 pl-6 col-span-2">
+              <Button
+                variant="contained"
+                component="label"
+                size="small"
+                startIcon={<AddPhotoAlternateIcon />}
                 sx={{
-                  "& .MuiFormControlLabel-label": {
-                    fontSize: "1.25rem",
+                  fontSize: "1.5rem",
+                  padding: "10px",
+                  backgroundColor: "#1976d2",
+                  "&:hover": {
+                    backgroundColor: "#1565c0",
                   },
                 }}
-              />
+              >
+                Upload Image
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </Button>
             </div>
-          </div>
-          <div className="w-full mt-4 flex justify-center md:justify-end">
-            <button
-              type="submit"
-              className="rounded-lg border-2 border-sky-500 px-8 py-3 text-xl text-sky-500 duration-200 hover:bg-sky-500 hover:text-white "
-              onClick={() => {
-                onSubmit();
-              }}
-            >
-              Add Course
-            </button>
+            {/* 
+            
+
+            */}
+            <div className="w-full mt-4 flex justify-center md:justify-end add-course-btn col-span-2">
+              <button
+                type="submit"
+                className="rounded-lg border-2 px-8 py-3 text-xl duration-200"
+                onClick={() => {
+                  onSubmit();
+                }}
+              >
+                Add Course
+              </button>
+            </div>
           </div>
         </div>
       </div>

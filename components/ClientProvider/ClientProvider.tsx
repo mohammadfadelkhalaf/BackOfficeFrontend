@@ -6,6 +6,10 @@ import { setResponse, setNotification } from "@/actions/chatAction.js";
 import { Provider, connect } from "react-redux";
 import { CoursesProvider } from "@/ApiProviders/CourseProvider";
 import { OrdersProvider } from "@/ApiProviders/OrdersProvider";
+import jwtDecode from "jwt-decode";
+import { parseJwt } from "@/utils/parseJWT";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ClientProvider = ({ children }) => {
   const [newMessageResponse, setNewMessageResponse] = useState();
@@ -30,6 +34,7 @@ const ClientProvider = ({ children }) => {
       connection.on("GetNotification", (notification) => {
         if (typeof notification === "object") {
           setNewNotificationResponse(notification);
+        } else {
         }
       });
 
@@ -53,9 +58,34 @@ const ClientProvider = ({ children }) => {
     }
   };
 
+  //   function parseJwt(token: string) {
+  //     if (!token) { return; }
+  //     const base64Url = token.split('.')[1];
+  //     const base64 = base64Url.replace('-', '+').replace('_', '/');
+  //     return JSON.parse(window.atob(base64));
+  // }
+
   useEffect(() => {
-    setUserId("812bc424-2b5d-4636-9c46-10d1eb6108c0");
-    joinChat("812bc424-2b5d-4636-9c46-10d1eb6108c0");
+    let decoded = {};
+    const token = localStorage.getItem("token");
+
+    if (token != null) {
+      try {
+        decoded = parseJwt(token);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    if (decoded != null) {
+      console.log("join-chat" + decoded.UserId);
+      setUserId(decoded.UserId);
+      joinChat(decoded.UserId);
+      // getUserChatPreview(decoded.UserId);
+    }
+
+    // setUserId("e34b83be-8c1e-4683-b921-60e819b655ab");
+    // joinChat("e34b83be-8c1e-4683-b921-60e819b655ab");
   }, []);
 
   useEffect(() => {
@@ -66,12 +96,14 @@ const ClientProvider = ({ children }) => {
 
   useEffect(() => {
     if (newNotificationResponse) {
+      toast.success(newNotificationResponse.descriptions);
       store.dispatch(setNotification(newNotificationResponse));
     }
   }, [newNotificationResponse]);
 
   return (
     <Provider store={store}>
+      <ToastContainer />
       <CoursesProvider>
         <OrdersProvider>{children}</OrdersProvider>
       </CoursesProvider>

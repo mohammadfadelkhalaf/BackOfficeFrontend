@@ -6,16 +6,31 @@ import deleteCourse from "@/utils/deleteCourse";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import DeleteIcon from "@mui/icons-material/Delete";
-// import EditNoteIcon from '@mui/icons-material/EditNote';
 import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
 import EditNote from "@mui/icons-material/EditNote";
-import { useCourses } from "@/ApiProviders/CourseProvider";
-import UpdateCourseForm from "../UpdateCourseForm/UpdateCourseForm";
+import { useNewsLetters } from "@/ApiProviders/NewslettersProvider";
+import getNewsLetters, { INewsLetter } from "@/utils/getNewsletters";
+import deleteNewsletter from "@/utils/deleteNewsletter";
+import UpdateNewsLetterForm from "../UpdateNewsLetterForm/UpdateNewsLetterForm";
 
-const CourseTableRow = ({ course }: { course: ICourseFromDB }) => {
-  const { courses, error, loading, setCourses } = useCourses();
+const NewsletterTableRow = ({
+  newsLetter,
+  setNewsLetters,
+}: {
+  newsLetter: INewsLetter;
+  setNewsLetters: React.Dispatch<React.SetStateAction<INewsLetter[]>>;
+}) => {
+  // const { newsLetters, error, loading, setNewsLetters } = useNewsLetters();
 
-  const { id, title, price, totalHours, author } = course;
+  const {
+    email,
+    dailynewsletter,
+    advertisingupdates,
+    weekinreview,
+    eventupdates,
+    startupweekly,
+    podcasts,
+  } = newsLetter;
 
   // modal operations
   const [open, setOpen] = useState(false);
@@ -35,14 +50,14 @@ const CourseTableRow = ({ course }: { course: ICourseFromDB }) => {
     flexDirection: "column",
     maxWidth: 800,
     maxHeight: "85%",
-    overflow: "hidden", // Ensure it scrolls if content overflows
+    overflow: "hidden",
     "@media (max-width: 600px)": {
       maxWidth: "85%",
     },
   };
 
   // delete operation
-  const handleDelete = async (courseId) => {
+  const handleDelete = async (subscriberEmail: string) => {
     const confirmationResult = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -54,8 +69,8 @@ const CourseTableRow = ({ course }: { course: ICourseFromDB }) => {
     });
     if (confirmationResult.isConfirmed) {
       try {
-        const result = await deleteCourse(courseId);
-        toast.success("Course deleted successfully", {
+        const result = await deleteNewsletter(subscriberEmail);
+        toast.success("Newsletter deleted successfully", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -66,12 +81,12 @@ const CourseTableRow = ({ course }: { course: ICourseFromDB }) => {
           theme: "colored",
         });
         // get all courses again
-        const coursesData = await getCourses();
-        setCourses(coursesData);
+        const newsLetterData = await getNewsLetters();
+        setNewsLetters(newsLetterData);
       } catch (error) {
-        console.error("Error deleting course:", error);
+        console.error("Error deleting :", error);
 
-        toast.error("Failed to add course", {
+        toast.error("Failed to delete", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -86,10 +101,25 @@ const CourseTableRow = ({ course }: { course: ICourseFromDB }) => {
   };
   return (
     <TableRow>
-      <TableCell sx={{ fontSize: "1.6rem" }}>{title}</TableCell>
-      <TableCell sx={{ fontSize: "1.6rem" }}>{author}</TableCell>
-      <TableCell sx={{ fontSize: "1.6rem" }}>$ {price}</TableCell>
-      <TableCell sx={{ fontSize: "1.6rem" }}>{totalHours}</TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>{email}</TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>
+        {dailynewsletter ? "Yes" : "No"}
+      </TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>
+        {advertisingupdates ? "Yes" : "No"}
+      </TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>
+        {weekinreview ? "Yes" : "No"}
+      </TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>
+        {eventupdates ? "Yes" : "No"}
+      </TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>
+        {startupweekly ? "Yes" : "No"}
+      </TableCell>
+      <TableCell sx={{ fontSize: "1.6rem" }}>
+        {podcasts ? "Yes" : "No"}
+      </TableCell>
       <TableCell sx={{ fontSize: "1.6rem" }}>
         <div className="flex justify-end gap-2">
           <Button
@@ -109,7 +139,7 @@ const CourseTableRow = ({ course }: { course: ICourseFromDB }) => {
             <EditNote />
           </Button>
           <Button
-            onClick={() => handleDelete(id)}
+            onClick={() => handleDelete(email)}
             variant="text"
             color="error"
             title="Delete"
@@ -126,15 +156,16 @@ const CourseTableRow = ({ course }: { course: ICourseFromDB }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <UpdateCourseForm
-            updatableCourse={course}
+          <UpdateNewsLetterForm
+            updatableNewsLetter={newsLetter}
             // refetch={refetch}
             handleClose={handleClose}
-          ></UpdateCourseForm>
+            setNewsLetters={setNewsLetters}
+          ></UpdateNewsLetterForm>
         </Box>
       </Modal>
     </TableRow>
   );
 };
 
-export default CourseTableRow;
+export default NewsletterTableRow;

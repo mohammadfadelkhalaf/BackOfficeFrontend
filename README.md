@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Frontend Setup
 
-## Getting Started
+The frontend project is built using Next.js.
 
-First, run the development server:
+## Steps
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Navigate to the Frontend Project Folder**
+   Go to your File Explorer and navigate to your frontend project folder.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Open PowerShell Window**
+   Press and hold the Shift key, then right-click. Click on “Open PowerShell window here”.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+  ![image](https://github.com/mohammadfadelkhalaf/BackOfficeFrontend/assets/74179737/a0366ea3-aefa-43c5-a620-77ad6bb62d6b)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+3. **Install Dependencies**
+   After your PowerShell window is opened, type `npm install` and press Enter. This should install all the dependencies of your project if not already installed.
 
-To learn more about Next.js, take a look at the following resources:
+4. **Run in Development Mode**
+   After installing the dependencies, type `npm run dev` to run the frontend project in development mode. Open a browser and go to `http://localhost:3000/` to see the project.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   **Note:** The project will run slower in a development environment. To run the project in a production environment, follow the next steps.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+5. **Stop Current Execution**
+   To run the project in a production environment, stop the current project execution by pressing `Ctrl + C` twice in the PowerShell window.
 
-## Deploy on Vercel
+6. **Build for Production**
+   Run `npm run build` to build the production environment. Once the build is completed, run `npm start` to start the project in a production environment.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+7. **Open in Browser**
+   Go to a browser and type `http://localhost:3000/` to see the project in a production environment.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Conclusion
+
+Following these steps will help you set up and run the front-end project. Ensure that all dependencies are installed and properly configured.
+
+Feel free to reach out if you encounter any issues during the setup process.

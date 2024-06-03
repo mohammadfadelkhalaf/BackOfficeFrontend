@@ -34,12 +34,15 @@ export interface ICourseFromDB {
 
 const getCourses = async (): Promise<ICourseFromDB[]> => {
   try {
-    const response = await fetch("https://localhost:7098/api/Courses", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://coursesmanagementsapi.azurewebsites.net/api/Courses",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch courses");
@@ -53,7 +56,7 @@ const getCourses = async (): Promise<ICourseFromDB[]> => {
 export default getCourses;
 
 // const getCourses = async (): Promise<ICourseFromDB[]> => {
-//   let url = "https://localhost:7098/api/Courses";
+//   let url = "https://coursesmanagementsapi.azurewebsites.net/api/Courses";
 
 //   const res = await fetch(url, {
 //     cache: "no-cache",

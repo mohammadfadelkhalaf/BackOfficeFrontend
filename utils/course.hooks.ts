@@ -4,7 +4,7 @@
 //   const courseInfo = useQuery({
 //     queryKey: ["courses"],
 //     queryFn: async () => {
-//       let url = "https://localhost:7098/api/Courses";
+//       let url = "https://coursesmanagementsapi.azurewebsites.net/api/Courses";
 //       const { data } = await axios.get(url);
 //       return data;
 //     },
@@ -16,7 +16,7 @@
 
 // export const useAddCourse = () => {
 //   const addCourse = async (newCourse) => {
-//     let url = "https://localhost:7098/api/Courses";
+//     let url = "https://coursesmanagementsapi.azurewebsites.net/api/Courses";
 //     const { data } = await axios.post(url, newCourse);
 //     return data;
 //   };

@@ -6,7 +6,7 @@ const updateNewsletter = async (
 ): Promise<void> => {
   try {
     const response = await fetch(
-      `https://localhost:7098/api/Subscribers/${subscriberEmail}`,
+      `https://coursesmanagementsapi.azurewebsites.net/api/Subscribers/${subscriberEmail}`,
       {
         method: "PUT",
         headers: {

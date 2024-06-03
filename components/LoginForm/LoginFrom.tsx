@@ -38,7 +38,7 @@ const LoginFrom = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "https://localhost:7098/api/Login",
+        "https://coursesmanagementsapi.azurewebsites.net/api/Login",
         userObj
       );
 

@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { DialogProps } from "@mui/material/Dialog";
 import WithAuth from "@/components/WithAuth/WithAuth";
 import CustomBreadcrumb from "@/components/CustomBreadcrumb/CustomBreadcrumb";
+import Swal from "sweetalert2";
 
 type TCourse = {
   id: number;
@@ -43,7 +44,9 @@ const BatchSetup = () => {
   }, [open]);
 
   const refetchBatches = async () => {
-    const batches = await axios.get("https://localhost:7098/api/Batch");
+    const batches = await axios.get(
+      "https://coursesmanagementsapi.azurewebsites.net/api/Batch"
+    );
     console.log(batches.data);
     setBatches(batches.data);
   };
@@ -51,14 +54,16 @@ const BatchSetup = () => {
   useEffect(() => {
     const getCourses = async () => {
       const response = await axios.get(
-        "https://localhost:7098/api/Courses/GetCoursesGrpc"
+        "https://coursesmanagementsapi.azurewebsites.net/api/Courses/GetCoursesGrpc"
       );
       console.log(response.data);
       setCourses(response.data);
     };
 
     const getBatches = async () => {
-      const batches = await axios.get("https://localhost:7098/api/Batch");
+      const batches = await axios.get(
+        "https://coursesmanagementsapi.azurewebsites.net/api/Batch"
+      );
       console.log(batches.data);
       setBatches(batches.data);
     };
@@ -89,7 +94,7 @@ const BatchSetup = () => {
     };
 
     const response = await axios.post(
-      "https://localhost:7098/api/Batch",
+      "https://coursesmanagementsapi.azurewebsites.net/api/Batch",
       batchObj
     );
 
@@ -101,12 +106,31 @@ const BatchSetup = () => {
   };
 
   const handleDelete = async (id: number) => {
-    const response = await axios.delete(
-      `https://localhost:7098/api/Batch/${id}`
-    );
-    if (response.status === 200) {
-      toast.success("Batch deleted");
-      refetchBatches();
+    const confirmationResult = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    console.log(confirmationResult.isConfirmed);
+
+    if (confirmationResult.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `https://coursesmanagementsapi.azurewebsites.net/api/Batch/${id}`
+        );
+        if (response.status === 200) {
+          toast.success("Batch deleted");
+          refetchBatches();
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to deleted");
+      }
     }
   };
   console.log("date: ", initialDate);
@@ -151,7 +175,7 @@ const BatchSetup = () => {
 
     console.log("response: ", batchObj);
     const response = await axios.put(
-      `https://localhost:7098/api/Batch/${id}`,
+      `https://coursesmanagementsapi.azurewebsites.net/api/Batch/${id}`,
       batchObj
     );
     console.log("response: ", response);

@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export",
+  trailingSlash: true,
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -9,4 +11,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

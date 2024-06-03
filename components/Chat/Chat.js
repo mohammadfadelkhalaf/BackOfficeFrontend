@@ -60,7 +60,7 @@ const Chat = ({ chat }) => {
   useEffect(() => {
     // Initialize the SignalR connection
     const connection = new HubConnectionBuilder()
-      .withUrl("https://localhost:7098/chatHub")
+      .withUrl("https://coursesmanagementsapi.azurewebsites.net/chatHub")
       .configureLogging(LogLevel.Information)
       .build();
 
@@ -89,7 +89,9 @@ const Chat = ({ chat }) => {
   const getUserChatPreview = (userId) => {
     if (userId) {
       axios
-        .get(`https://localhost:7098/api/Chatting/chatpreview?id=${userId}`)
+        .get(
+          `https://coursesmanagementsapi.azurewebsites.net/api/Chatting/chatpreview?id=${userId}`
+        )
         .then((res) => {
           setFriends(res.data);
           setLoading(false);
@@ -102,7 +104,7 @@ const Chat = ({ chat }) => {
     if (activeChatUser) {
       axios
         .get(
-          `https://localhost:7098/api/Chatting/getallchattinglistbyuserid?toUserId=${inputValue}&fromUserId=${fromValue}`
+          `https://coursesmanagementsapi.azurewebsites.net/api/Chatting/getallchattinglistbyuserid?toUserId=${inputValue}&fromUserId=${fromValue}`
         )
         .then((res) => {
           setMessages(res.data);
@@ -116,7 +118,7 @@ const Chat = ({ chat }) => {
       let userIdData = userId === fromValue ? inputValue : fromValue;
       axios
         .put(
-          `https://localhost:7098/api/Chatting/updateunreadmessage?fromUserId=${fromValue}&toUserId=${inputValue}&userid=${userIdData}`
+          `https://coursesmanagementsapi.azurewebsites.net/api/Chatting/updateunreadmessage?fromUserId=${fromValue}&toUserId=${inputValue}&userid=${userIdData}`
         )
         .then((res) => {
           let newFriends = friends.map((fnd) => {
@@ -138,7 +140,7 @@ const Chat = ({ chat }) => {
   const sendMessaageHandler = (textType) => {
     if (textType == "old") {
       axios
-        .post("https://localhost:7098/api/Chatting", {
+        .post("https://coursesmanagementsapi.azurewebsites.net/api/Chatting", {
           id: 0,
           message: newMessage,
           creationTimestamp: new Date().toISOString(),
@@ -179,7 +181,7 @@ const Chat = ({ chat }) => {
     } else if (textType == "new") {
       console.log("else");
       axios
-        .post(`https://localhost:7098/api/Chatting`, {
+        .post(`https://coursesmanagementsapi.azurewebsites.net/api/Chatting`, {
           id: 0,
           message: newMessage,
           creationTimestamp: "2023-09-03T04:55:56.412Z",
@@ -265,7 +267,7 @@ const Chat = ({ chat }) => {
   const [userList, setUserList] = useState([]);
   const GetAllUsers = (userID) => {
     axios
-      .get(`https://localhost:7098/api/Users`)
+      .get(`https://coursesmanagementsapi.azurewebsites.net/api/Users`)
       .then((res) => {
         console.log(userID);
         const list = res.data

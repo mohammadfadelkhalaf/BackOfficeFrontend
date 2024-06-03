@@ -20,7 +20,7 @@ const ClientProvider = ({ children }) => {
   const joinChat = async (props) => {
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(`https://localhost:7098/SignalR-hub`)
+        .withUrl(`https://coursesmanagementsapi.azurewebsites.net/SignalR-hub`)
         .configureLogging(LogLevel.Information)
         .build();
 

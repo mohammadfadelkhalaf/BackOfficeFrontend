@@ -3,7 +3,7 @@ import { IOrder } from "./getOrders";
 const fetchSingleOrderById = async (orderId: number): Promise<IOrder> => {
   try {
     const response = await fetch(
-      `https://localhost:7098/api/Orders/${orderId}`
+      `https://coursesmanagementsapi.azurewebsites.net/api/Orders/${orderId}`
     );
 
     if (!response.ok) {

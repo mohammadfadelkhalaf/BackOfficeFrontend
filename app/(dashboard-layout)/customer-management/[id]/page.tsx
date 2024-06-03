@@ -180,7 +180,7 @@ const ViewSingleUser = ({ params }) => {
   useEffect(() => {
     const getUserPayment = async () => {
       const response = await axios.get(
-        `https://localhost:7098/api/Orders/GetOrderDetailsByUserId/${id}`
+        `https://coursesmanagementsapi.azurewebsites.net/api/Orders/GetOrderDetailsByUserId/${id}`
       );
       if (response.status !== 200) {
         return;
@@ -190,7 +190,7 @@ const ViewSingleUser = ({ params }) => {
 
     const getUserCourse = async () => {
       const response = await axios.get(
-        `https://localhost:7098/api/UserCourses/GetCourseDetailsByUserId/${id}`
+        `https://coursesmanagementsapi.azurewebsites.net/api/UserCourses/GetCourseDetailsByUserId/${id}`
       );
       if (response.status !== 200) {
         return;

@@ -1,7 +1,7 @@
 const deleteCourse = async (courseId: number) => {
   try {
     const response = await fetch(
-      `https://localhost:7098/api/Courses/${courseId}`,
+      `https://coursesmanagementsapi.azurewebsites.net/api/Courses/${courseId}`,
       {
         method: "DELETE",
         headers: {

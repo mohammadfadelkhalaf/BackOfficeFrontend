@@ -147,7 +147,7 @@ const DataTable = ({
                                 rowCount={rows.length}
                             />
                             <TableBody>
-                                {rows?.map((row) => {
+                                {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                     return (
                                         <TableRow
                                             hover

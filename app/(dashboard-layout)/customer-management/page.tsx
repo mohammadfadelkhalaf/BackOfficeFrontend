@@ -27,6 +27,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import WithAuth from "@/components/WithAuth/WithAuth";
 import CustomBreadcrumb from "@/components/CustomBreadcrumb/CustomBreadcrumb";
+import Swal from "sweetalert2";
 
 interface HeadCell {
   disablePadding: boolean;
@@ -136,14 +137,18 @@ const CustomerManagement = () => {
   }, [open]);
 
   const refetchUser = async () => {
-    const response = await axios.get("https://localhost:7098/api/Users");
+    const response = await axios.get(
+      "https://coursesmanagementsapi.azurewebsites.net/api/Users"
+    );
     console.log(response.data);
     setRows(response.data);
   };
 
   useEffect(() => {
     const getUser = async () => {
-      const response = await axios.get("https://localhost:7098/api/Users");
+      const response = await axios.get(
+        "https://coursesmanagementsapi.azurewebsites.net/api/Users"
+      );
       console.log(response.data);
       setRows(response.data);
     };
@@ -176,7 +181,7 @@ const CustomerManagement = () => {
 
     try {
       const response = await axios.post(
-        "https://localhost:7098/api/FileUploader",
+        "https://coursesmanagementsapi.azurewebsites.net/api/FileUploader",
         formData,
         {
           headers: {
@@ -193,13 +198,30 @@ const CustomerManagement = () => {
   };
 
   const handleDelete = async (id: string) => {
-    console.log(id);
-    const response = await axios.delete(
-      `https://localhost:7098/api/Users/${id}`
-    );
-    if (response.status === 200) {
-      toast.success("User deleted");
-      refetchUser();
+    const confirmationResult = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+    console.log(confirmationResult.isConfirmed);
+
+    if (confirmationResult.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `https://coursesmanagementsapi.azurewebsites.net/api/Users/${id}`
+        );
+        if (response.status === 200) {
+          toast.success("User deleted");
+          refetchUser();
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to delete the user");
+      }
     }
   };
 
@@ -248,7 +270,7 @@ const CustomerManagement = () => {
 
     try {
       const response = await axios.put(
-        `https://localhost:7098/api/Users/${id}`,
+        `https://coursesmanagementsapi.azurewebsites.net/api/Users/${id}`,
         userObj
       );
       console.log(response);
@@ -281,85 +303,90 @@ const CustomerManagement = () => {
               <Table Nutrition={{ minWidth: 750 }} aria-labelledby="tableTitle">
                 <EnhancedTableHead rowCount={rows.length} />
                 <TableBody>
-                  {rows?.map((row) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.id}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <TableCell
-                          component="th"
-                          scope="row"
-                          padding="none"
-                          sx={{ fontSize: "1.6rem" }}
-                          align="center"
+                  {rows
+                    ?.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                    .map((row) => {
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.id}
+                          sx={{ cursor: "pointer" }}
                         >
-                          {row.firstName}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
-                          {row.lastName}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
-                          {row.userName}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
-                          {row.email}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
-                          {row.bio}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
-                          {row.profileImage}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
-                          {row.currentBalance}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
-                          <div className="flex justify-center items-center">
-                            <button
-                              title="Edit"
-                              onClick={() => handleEdit(row)}
-                            >
-                              <Image
-                                src="/Icons/edit.png"
-                                alt="edit"
-                                width={20}
-                                height={20}
-                              />
-                            </button>
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            padding="none"
+                            sx={{ fontSize: "1.6rem" }}
+                            align="center"
+                          >
+                            {row.firstName}
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
+                            {row.lastName}
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
+                            {row.userName}
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
+                            {row.email}
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
+                            {row.bio}
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
+                            {row.profileImage}
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
+                            {row.currentBalance}
+                          </TableCell>
+                          <TableCell align="center" sx={{ fontSize: "1.6rem" }}>
+                            <div className="flex justify-center items-center">
+                              <button
+                                title="Edit"
+                                onClick={() => handleEdit(row)}
+                              >
+                                <Image
+                                  src="/Icons/edit.png"
+                                  alt="edit"
+                                  width={20}
+                                  height={20}
+                                />
+                              </button>
 
-                            <Link
-                              href={`/customer-management/${row.id}`}
-                              title="View"
-                              className="mx-4"
-                            >
-                              <Image
-                                src="/Icons/eye.png"
-                                alt="view"
-                                width={20}
-                                height={20}
-                              />
-                            </Link>
+                              <Link
+                                href={`/customer-management/${row.id}`}
+                                title="View"
+                                className="mx-4"
+                              >
+                                <Image
+                                  src="/Icons/eye.png"
+                                  alt="view"
+                                  width={20}
+                                  height={20}
+                                />
+                              </Link>
 
-                            <button
-                              title="Delete"
-                              onClick={() => handleDelete(row.id)}
-                            >
-                              <Image
-                                src="/Icons/bin.png"
-                                alt="delete"
-                                width={20}
-                                height={20}
-                              />
-                            </button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                              <button
+                                title="Delete"
+                                onClick={() => handleDelete(row.id)}
+                              >
+                                <Image
+                                  src="/Icons/bin.png"
+                                  alt="delete"
+                                  width={20}
+                                  height={20}
+                                />
+                              </button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow>
                       <TableCell colSpan={6} />
@@ -368,17 +395,16 @@ const CustomerManagement = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={10}
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        sx={{ fontSize: "1.6rem" }}
-                    /> */}
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              sx={{ fontSize: "1.6rem" }}
+            />
           </Paper>
         </Box>
 

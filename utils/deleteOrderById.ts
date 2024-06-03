@@ -1,7 +1,7 @@
 const deleteOrderById = async (orderId: number): Promise<void> => {
   try {
     const response = await fetch(
-      `https://localhost:7098/api/Orders/${orderId}`,
+      `https://coursesmanagementsapi.azurewebsites.net/api/Orders/${orderId}`,
       {
         method: "DELETE",
       }

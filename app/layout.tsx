@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import ClientProvider from "@/components/ClientProvider/ClientProvider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,13 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AppRouterCacheProvider>
+        {/* <AppRouterCacheProvider>
           <Navbar></Navbar>
-        </AppRouterCacheProvider>
+        </AppRouterCacheProvider> */}
 
         <main>
           <AppRouterCacheProvider>
-            <ClientProvider>{children}</ClientProvider>
+            {/* <ClientProvider>{children}</ClientProvider> */}
+            {children}
           </AppRouterCacheProvider>
         </main>
       </body>

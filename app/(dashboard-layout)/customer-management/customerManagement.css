@@ -43,3 +43,11 @@ span.MuiTypography-root.MuiTypography-body1.MuiFormControlLabel-label.mui-ahj2mt
 .mui-1aquho2-MuiTabs-indicator{
     background-color: rgb(var(--primary-blue)) !important;
 }
+
+p.MuiTablePagination-displayedRows.mui-levciy-MuiTablePagination-displayedRows {
+    font-size: 1.6rem !important;
+}
+
+svg.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.mui-i4bv87-MuiSvgIcon-root {
+    font-size: 2.4rem !important;
+}

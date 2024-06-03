@@ -23,7 +23,7 @@ import { ICourseFromDB } from "./getCourses";
 // const updateCourse = async (courseId: number, updatedFields: ICourse) => {
 //   try {
 //     const response = await fetch(
-//       `https://localhost:7098/api/Courses/${courseId}`,
+//       `https://coursesmanagementsapi.azurewebsites.net/api/Courses/${courseId}`,
 //       {
 //         method: "PUT",
 //         headers: {
@@ -47,7 +47,7 @@ import { ICourseFromDB } from "./getCourses";
 const updateCourse = async (courseId: number, updatedFields: ICourse) => {
   try {
     const response = await fetch(
-      `https://localhost:7098/api/Courses/${courseId}`,
+      `https://coursesmanagementsapi.azurewebsites.net/api/Courses/${courseId}`,
       {
         method: "PUT",
         headers: {

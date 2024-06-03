@@ -10,12 +10,15 @@ export interface INewsLetter {
 
 const getNewsLetters = async (): Promise<INewsLetter[]> => {
   try {
-    const response = await fetch("https://localhost:7098/api/Subscribers", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://coursesmanagementsapi.azurewebsites.net/api/Subscribers",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch newsletters");

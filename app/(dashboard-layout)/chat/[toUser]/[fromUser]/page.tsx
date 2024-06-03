@@ -88,7 +88,9 @@ const Chat = ({ chat, params }) => {
   const getUserChatPreview = (props) => {
     if (props) {
       axios
-        .get(`https://localhost:7098/api/Chatting/chatpreview?id=${props}`)
+        .get(
+          `https://coursesmanagementsapi.azurewebsites.net/api/Chatting/chatpreview?id=${props}`
+        )
         .then((res) => {
           // console.log(res.data);
           setFriends(res.data);
@@ -115,7 +117,7 @@ const Chat = ({ chat, params }) => {
       // new api with pagination
       axios
         .get(
-          `https://localhost:7098/api/Chatting/getallchattinglistbyuseridwithpagination?toUserId=${activeChatUser.toUserId}&fromUserId=${activeChatUser.fromUserId}&pageNumber=1&noOfRowsPerPage=20`
+          `https://coursesmanagementsapi.azurewebsites.net/api/Chatting/getallchattinglistbyuseridwithpagination?toUserId=${activeChatUser.toUserId}&fromUserId=${activeChatUser.fromUserId}&pageNumber=1&noOfRowsPerPage=20`
         )
         .then((res) => {
           setMessages(res.data.chats.reverse());
@@ -170,7 +172,7 @@ const Chat = ({ chat, params }) => {
       console.log("if");
       setMsgFlag(false);
       axios
-        .post(`https://localhost:7098/api/Chatting`, {
+        .post(`https://coursesmanagementsapi.azurewebsites.net/api/Chatting`, {
           id: 0,
           message: newMessage,
           creationTimestamp: "2023-09-03T04:55:56.412Z",
@@ -216,7 +218,7 @@ const Chat = ({ chat, params }) => {
     } else if (textType == "new") {
       console.log("else");
       axios
-        .post(`https://localhost:7098/api/Chatting`, {
+        .post(`https://coursesmanagementsapi.azurewebsites.net/api/Chatting`, {
           id: 0,
           message: newMessage,
           creationTimestamp: "2023-09-03T04:55:56.412Z",
@@ -252,7 +254,7 @@ const Chat = ({ chat, params }) => {
             : activeChatUser.fromUserId;
         axios
           .put(
-            `https://localhost:7098/api/Chatting/updateunreadmessage?fromUserId=${activeChatUser.fromUserId}&toUserId=${activeChatUser.toUserId}&userid=${userIdData}`
+            `https://coursesmanagementsapi.azurewebsites.net/api/Chatting/updateunreadmessage?fromUserId=${activeChatUser.fromUserId}&toUserId=${activeChatUser.toUserId}&userid=${userIdData}`
           )
           .then((res) => {
             let newFriends = friends.map((fnd) => {
@@ -317,7 +319,7 @@ const Chat = ({ chat, params }) => {
 
     axios
       .get(
-        `https://localhost:7098/api/Chatting/getallchattinglistbyuseridwithpagination?toUserId=${activeChatUser.toUserId}&fromUserId=${activeChatUser.fromUserId}&pageNumber=${page}&noOfRowsPerPage=10`
+        `https://coursesmanagementsapi.azurewebsites.net/api/Chatting/getallchattinglistbyuseridwithpagination?toUserId=${activeChatUser.toUserId}&fromUserId=${activeChatUser.fromUserId}&pageNumber=${page}&noOfRowsPerPage=10`
       )
       .then((res) => {
         if (res.data.chats.length > 0) {
@@ -356,7 +358,7 @@ const Chat = ({ chat, params }) => {
   const GetAllUsers = (userID) => {
     console.log(userID);
     axios
-      .get(`https://localhost:7098/api/Users`)
+      .get(`https://coursesmanagementsapi.azurewebsites.net/api/Users`)
       .then((res) => {
         const list = res.data
           .filter((user) => user.id != userID)
@@ -724,3 +726,278 @@ const mapStateToProps = (state: any) => ({
   chat: state.chatReducer,
 });
 export default connect(mapStateToProps)(Chat);
+
+// "use client";
+// import React, { useEffect, useState, useRef } from "react";
+// import { useRouter } from "next/navigation";
+// import axios from "axios";
+// import Link from "next/link";
+// import { parseJwt } from "@/utils/parseJWT";
+// import {
+//   DialogTitle,
+//   Dialog,
+//   DialogContent,
+//   DialogContentText,
+//   DialogActions,
+//   Button,
+//   Autocomplete,
+//   TextField
+// } from "@mui/material";
+// import "../../../../../components/Chat/chat.css";
+
+// const axiosInstance = axios.create({
+//   baseURL: 'https://coursesmanagementsapi.azurewebsites.net/api',
+// });
+
+// const Chat = ({ chat, params }) => {
+//   const [userId, setUserId] = useState("");
+//   const [open, setOpen] = useState(false);
+//   const [newMessage, setNewMessage] = useState("");
+//   const [selectedUsers, setSelectedUsers] = useState(null);
+//   const [userList, setUserList] = useState([]);
+//   const [friends, setFriends] = useState([]);
+//   const [messages, setMessages] = useState([]);
+//   const [activeChatUser, setActiveChatUser] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [msgFlag, setMsgFlag] = useState(true);
+//   const [moreLoadingFlag, setMoreLoadingFlag] = useState(false);
+//   const [page, setPage] = useState(2);
+//   const [isButtonVisible, setIsButtonVisible] = useState(true);
+//   const messageRef = useRef();
+//   const mMessageRef = useRef();
+//   const buttonRef = useRef();
+//   const { toUser, fromUser } = params;
+//   const router = useRouter();
+
+//   const handleClose = () => {
+//     setOpen(false);
+//   };
+
+//   const descriptionElementRef = useRef(null);
+
+//   function async getUserChatPreview(userId) {
+//     try {
+//       const res = await axiosInstance.get(`/Chatting/chatpreview?id=${userId}`);
+//       setFriends(res.data);
+//       setLoading(false);
+//     } catch (error) {
+//       console.error("Error fetching chat preview:", error);
+//     }
+//   };
+
+//   function async activeFriendHandler(friend) {
+//     if (friend.ureadCount > 0) {
+//       const userIdData =
+//         userId === friend.fromUserId ? friend.toUserId : friend.fromUserId;
+//       try {
+//         await axiosInstance.put(
+//           `/Chatting/updateunreadmessage?fromUserId=${friend.fromUserId}&toUserId=${friend.toUserId}&userid=${userIdData}`
+//         );
+//         setFriends(friends.map((fnd) => {
+//           if (fnd.friendUserId === friend.friendUserId) {
+//             fnd.ureadCount = 0;
+//           }
+//           return fnd;
+//         }));
+//       } catch (error) {
+//         console.error("Error updating unread message:", error);
+//       }
+//     }
+//     router.push(`/chat/${friend.toUserId}/${friend.fromUserId}`);
+//   };
+
+//   function async sendMessaageHandler(textType) {
+//     if (newMessage && msgFlag && textType === "old") {
+//       setMsgFlag(false);
+//       try {
+//         await axiosInstance.post(`/Chatting`, {
+//           id: 0,
+//           message: newMessage,
+//           creationTimestamp: new Date().toISOString(),
+//           lastUpdated: new Date().toISOString(),
+//           fromUserId: activeChatUser.fromUserId,
+//           toUserId: activeChatUser.toUserId,
+//           userId: userId,
+//           edited: true,
+//           unread: true,
+//           reportChatFromUserId: "string",
+//           reportChatReportId: "string",
+//           reportChatToUserId: "string",
+//           deleted: true,
+//         });
+//         setMessages((prev) => [
+//           ...prev,
+//           {
+//             id: 0,
+//             message: newMessage,
+//             creationTimestamp: new Date().toISOString(),
+//             lastUpdated: new Date().toISOString(),
+//             fromUserId: activeChatUser.fromUserId,
+//             toUserId: activeChatUser.toUserId,
+//             userId: userId,
+//             edited: true,
+//             unread: true,
+//             reportChatFromUserId: "string",
+//             reportChatReportId: "string",
+//             reportChatToUserId: "string",
+//             deleted: true,
+//           },
+//         ]);
+//         setNewMessage("");
+//         setMsgFlag(true);
+//         getUserChatPreview(userId);
+//       } catch (error) {
+//         console.error("Error sending message:", error);
+//       }
+//     } else if (textType === "new") {
+//       try {
+//         await axiosInstance.post(`/Chatting`, {
+//           id: 0,
+//           message: newMessage,
+//           creationTimestamp: new Date().toISOString(),
+//           lastUpdated: new Date().toISOString(),
+//           fromUserId: userId,
+//           toUserId: selectedUsers.code,
+//           userId: userId,
+//           edited: true,
+//           unread: true,
+//           reportChatFromUserId: "string",
+//           reportChatReportId: "string",
+//           reportChatToUserId: "string",
+//           deleted: true,
+//         });
+//         window.location.reload();
+//       } catch (error) {
+//         console.error("Error sending new message:", error);
+//       }
+//     }
+//   };
+
+//   function async loadMessages(pageNumber, rowsPerPage) {
+//     try {
+//       const res = await axiosInstance.get(
+//         `/Chatting/getallchattinglistbyuseridwithpagination?toUserId=${activeChatUser.toUserId}&fromUserId=${activeChatUser.fromUserId}&pageNumber=${pageNumber}&noOfRowsPerPage=${rowsPerPage}`
+//       );
+//       if (pageNumber === 1) {
+//         setMessages(res.data.chats.reverse());
+//       } else {
+//         setMessages((prev) => [...res.data.chats.reverse(), ...prev]);
+//         setIsButtonVisible(res.data.chats.length > 0);
+//       }
+//       setMoreLoadingFlag(false);
+//     } catch (error) {
+//       console.error("Error loading messages:", error);
+//       setMoreLoadingFlag(false);
+//     }
+//   };
+
+//   function async GetAllUsers(userID) {
+//     try {
+//       const res = await axiosInstance.get(`/User/getalluser?userID=${userID}`);
+//       setUserList(res.data);
+//     } catch (error) {
+//       console.error("Error fetching users:", error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (open) {
+//       descriptionElementRef.current?.focus();
+//     }
+//   }, [open]);
+
+//   useEffect(() => {
+//     const token = localStorage.getItem("token");
+//     if (token) {
+//       try {
+//         const decoded = parseJwt(token);
+//         setUserId(decoded.UserId);
+//         getUserChatPreview(decoded.UserId);
+//         GetAllUsers(decoded.UserId);
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     if (chat.newResponse) {
+//       setNewMessageResponse(chat.newResponse);
+//     }
+//   }, [chat.newResponse]);
+
+//   useEffect(() => {
+//     if (activeChatUser) {
+//       loadMessages(1, 20);
+//     }
+//   }, [activeChatUser]);
+
+//   useEffect(() => {
+//     if (friends.length > 0) {
+//       const newItem = friends.find(
+//         (friend) => friend.toUserId === toUser && friend.fromUserId === fromUser
+//       );
+//       if (newItem) {
+//         setActiveChatUser(newItem);
+//       }
+//     }
+//   }, [toUser, fromUser, friends]);
+
+//   const loadMoreHandler = () => {
+//     setPage((prev) => {
+//       const newPage = prev + 1;
+//       loadMessages(newPage, 10);
+//       return newPage;
+//     });
+//   };
+
+//   const renderMessage = (message, user) => {
+//     return (
+//       <div key={message.id} className={`message ${message.fromUserId === userId ? 'outgoing' : 'incoming'}`}>
+//         <div className="message-content">
+//           {message.message}
+//         </div>
+//         <div className="message-timestamp">
+//           {new Date(message.creationTimestamp).toLocaleTimeString()}
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   return (
+//     <div className="chat-container">
+//       <div className="chat-sidebar">
+//         {friends.map((friend) => (
+//           <div key={friend.friendUserId} className="friend" onClick={() => activeFriendHandler(friend)}>
+//             <div className="friend-name">{friend.friendUserName}</div>
+//             {friend.ureadCount > 0 && <div className="unread-count">{friend.ureadCount}</div>}
+//           </div>
+//         ))}
+//       </div>
+//       <div className="chat-main">
+//         <div className="chat-messages">
+//           {messages.map((message) => renderMessage(message, activeChatUser))}
+//         </div>
+//         <div className="chat-input">
+//           <TextField
+//             label="Type a message"
+//             fullWidth
+//             value={newMessage}
+//             onChange={(e) => setNewMessage(e.target.value)}
+//             onKeyPress={(e) => e.key === 'Enter' && sendMessaageHandler('old')}
+//           />
+//           <Button variant="contained" color="primary" onClick={() => sendMessaageHandler('old')}>
+//             Send
+//           </Button>
+//         </div>
+//       </div>
+//       {isButtonVisible && (
+//         <div className="load-more" ref={buttonRef} onClick={loadMoreHandler}>
+//           {moreLoadingFlag ? "Loading..." : "Load More"}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default Chat;

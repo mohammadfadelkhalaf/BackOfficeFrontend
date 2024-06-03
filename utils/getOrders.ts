@@ -25,7 +25,9 @@ export interface IOrder {
 
 const getOrders = async (): Promise<IOrder[]> => {
   try {
-    const response = await fetch("https://localhost:7098/api/Orders");
+    const response = await fetch(
+      "https://coursesmanagementsapi.azurewebsites.net/api/Orders"
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch orders");
@@ -39,7 +41,7 @@ const getOrders = async (): Promise<IOrder[]> => {
 export default getOrders;
 
 // export const getOrders = async () => {
-//   let url = "https://localhost:7098/api/Orders";
+//   let url = "https://coursesmanagementsapi.azurewebsites.net/api/Orders";
 
 //   const res = await fetch(url, {
 //     cache: "no-cache",

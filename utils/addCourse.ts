@@ -17,13 +17,16 @@ export interface ICourse {
 
 const addCourse = async (course: ICourse) => {
   try {
-    const response = await fetch("https://localhost:7098/api/Courses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(course),
-    });
+    const response = await fetch(
+      "https://coursesmanagementsapi.azurewebsites.net/api/Courses",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(course),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to add course");

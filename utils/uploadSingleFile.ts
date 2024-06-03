@@ -1,5 +1,6 @@
 export async function uploadSingleFile(fileData: File): Promise<string> {
-  const apiAddress = "https://localhost:7098" as string;
+  const apiAddress =
+    "https://coursesmanagementsapi.azurewebsites.net" as string;
   // const apiAddress = process.env.REACT_APP_SECRET as string;
   const formData = new FormData();
   formData.append("file", fileData);
